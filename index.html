@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Department-wise Wastage Analysis | Barflex Polyfilms</title>
+<script src="xlsx.full.min.js"></script>
+<style>
+:root{--navy:#17324d;--gold:#b9943f;--blue:#2563a8;--green:#19764a;--red:#b9342a;--orange:#c96b18;--ink:#1f2d3d;--muted:#687789;--line:#dce4ef;--soft:#f3f6fa;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--soft);color:var(--ink);font:13px/1.45 "Segoe UI",Arial,sans-serif}
+.hdr{background:var(--navy);color:#fff;padding:15px 22px;border-bottom:3px solid var(--gold);display:flex;justify-content:space-between;gap:18px;align-items:center}.hdr h1{margin:0;font-size:18px}.hdr p{margin:3px 0 0;color:#d7e0eb;font-size:11px}.firm{text-align:right;font-size:11px;color:#d7e0eb}.firm strong{display:block;color:#f1d999;font-size:13px}
+.main{padding:18px 22px;max-width:1440px;margin:auto}.grid{display:grid;gap:14px}.g2{grid-template-columns:1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:15px 17px;margin-bottom:14px;box-shadow:0 2px 10px rgba(23,50,77,.07)}
+.title{font-size:12px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.45px;border-bottom:2px solid var(--gold);padding-bottom:7px;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap}.upload{border:2px dashed var(--gold);background:#fffdf5;border-radius:8px;text-align:center;padding:28px;cursor:pointer}.upload:hover{background:#fff7de}.upload h2{margin:0 0 6px;color:var(--navy);font-size:15px}.upload p{margin:0;color:var(--muted);font-size:11.5px}
+.btn{border:0;border-radius:6px;padding:7px 12px;font-weight:800;font-size:11px;cursor:pointer;color:#fff;background:var(--navy)}.btn:hover{filter:brightness(.92)}.btn.green{background:var(--green)}.btn.gold{background:var(--gold)}.btn.blue{background:var(--blue)}.btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy)}
+.kpi{border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:8px;background:#fff;padding:12px}.kpi.green{border-left-color:var(--green)}.kpi.red{border-left-color:var(--red)}.kpi.gold{border-left-color:var(--gold)}.kl{font-size:9.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.45px}.kv{font-size:20px;font-weight:800;color:var(--navy);margin-top:3px}.ks{font-size:10.5px;color:var(--muted)}
+.dept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.dept{border:1px solid var(--line);border-top:4px solid var(--blue);border-radius:8px;padding:12px;background:#fff}.dept h3{font-size:12px;margin:0 0 8px;color:var(--navy);text-transform:uppercase}.row{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;margin:4px 0}.row span:first-child{color:var(--muted)}.row b{color:var(--navy)}
+.tw{overflow:auto}table{width:100%;border-collapse:collapse;font-size:11.2px}th{background:var(--navy);color:#fff;text-align:left;padding:7px 8px;white-space:nowrap}th.r,td.r{text-align:right}td{border-bottom:1px solid #edf1f6;padding:6px 8px;white-space:nowrap}tr:hover td{background:#f7f9fd}.badge{display:inline-block;border-radius:10px;padding:2px 7px;font-size:10px;font-weight:800}.ok{background:#e8f6ef;color:var(--green)}.bad{background:#feeceb;color:var(--red)}
+.chart svg{width:100%;height:auto;display:block}.hint{font-size:11px;color:var(--muted)}.status{font-size:12px;color:var(--green);font-weight:800;margin-top:8px}.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:3px}select,input{border:1px solid var(--line);border-radius:5px;padding:6px 8px;background:#fff;color:var(--ink);min-width:180px}
+.alert{border-left:4px solid var(--gold);background:#fff8df;border-radius:6px;padding:9px 11px;margin:7px 0;font-size:11.8px}.alert.red{border-left-color:var(--red);background:#feeceb}.alert.green{border-left-color:var(--green);background:#eaf8f0}
+@media(max-width:900px){.g2,.g4{grid-template-columns:1fr}.hdr{display:block}.firm{text-align:left;margin-top:8px}.main{padding:14px}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div><h1>Department-wise Wastage Analysis</h1><p>WASTE DATA DEPARTMENT WISE - Department KPIs, breach tracking, charts, tables, insights and export workbook</p></div>
+  <div class="firm"><strong>Maars & Associates</strong>CA Akash Agarwal | 8799999935<br>Chartered Accountants, Surat</div>
+</header>
+
+<main class="main">
+  <section class="card">
+    <div class="title">Upload Wastage Workbook</div>
+    <div class="upload" onclick="document.getElementById('wdFile').click()">
+      <h2>Click to upload WASTE DATA DEPARTMENT WISE.xlsx</h2>
+      <p>Reads Extrusion, Printing/Lamination/Slitting, Pouching, PVC and WPP sheets. The tool keeps department data separate and exports chart data, tables and insights to Excel.</p>
+    </div>
+    <input type="file" id="wdFile" accept=".xlsx,.xls" hidden onchange="loadFile(event)">
+    <div id="status" class="status"></div>
+  </section>
+
+  <section id="dashboard" style="display:none">
+    <div class="grid g4" id="kpis"></div>
+    <div class="dept-grid" id="deptCards"></div>
+
+    <div class="grid g2">
+      <div class="card">
+        <div class="title">Avg Wastage % vs Max Allowed <span class="toolbar"><button class="btn blue" onclick="exportChart('wasteChart','wastage_vs_max','png')">PNG</button><button class="btn ghost" onclick="exportChartExcel('wastage')">Excel</button></span></div>
+        <div class="chart" id="wasteChart"></div>
+      </div>
+      <div class="card">
+        <div class="title">Breach Day Mix <span class="toolbar"><button class="btn blue" onclick="exportChart('breachChart','breach_day_mix','png')">PNG</button><button class="btn ghost" onclick="exportChartExcel('breach')">Excel</button></span></div>
+        <div class="chart" id="breachChart"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">Monthly Wastage Trend - Individual Departments <span class="toolbar"><button class="btn blue" onclick="exportChart('trendChart','monthly_wastage_trend','png')">PNG</button><button class="btn ghost" onclick="exportChartExcel('trend')">Excel</button></span></div>
+      <div class="chart" id="trendChart"></div>
+    </div>
+
+    <div class="card" id="monthlyCard">
+      <div class="title">Month-wise Wastage Summary <span class="toolbar"><button class="btn green" onclick="exportTableImage('monthlyCard','monthly_wastage_summary')">PNG</button><button class="btn ghost" onclick="exportTableExcel('monthlyTbl','monthly_wastage_summary')">Excel</button></span></div>
+      <div class="tw"><table id="monthlyTbl"><thead></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="card" id="detailCard">
+      <div class="title">Department-wise Wastage Detail <span class="toolbar"><button class="btn green" onclick="exportTableImage('detailCard','department_wastage_detail')">PNG</button><button class="btn ghost" onclick="exportTableExcel('detailTbl','department_wastage_detail')">Excel</button></span></div>
+      <div class="filters">
+        <div><label>Department</label><select id="deptFilter" onchange="renderDetailTable()"><option value="ext">Extrusion</option><option value="pls">Printing / Lamination / Slitting</option><option value="pou">Pouching</option><option value="pvc">PVC</option><option value="wpp">WPP</option></select></div>
+        <div><label>Month</label><select id="monthFilter" onchange="renderDetailTable()"></select></div>
+      </div>
+      <div class="tw"><table id="detailTbl"><thead></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <div class="title">Insights</div>
+      <div id="insights"></div>
+    </div>
+
+    <div class="card">
+      <div class="title">Download Centre</div>
+      <div class="filters">
+        <div><label>Client</label><input id="client" value="Barflex Polyfilms Pvt. Ltd."></div>
+        <div><label>Period Label</label><input id="period" value="FY 2025-26"></div>
+      </div>
+      <div class="toolbar">
+        <button class="btn green" onclick="exportMasterExcel()">Download Master Excel</button>
+        <button class="btn gold" onclick="exportAllCharts()">Download All Charts as Images</button>
+      </div>
+      <p class="hint">Excel export includes all department sheets, monthly summary, chart data and insight rows. No final narrative report is exported.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+let WD={}, chartData={};
+const labels={ext:"Extrusion",pls:"Printing/Lam/Slitting",pou:"Pouching",pvc:"PVC",wpp:"WPP"};
+const deptCfg=[
+  {k:"ext",name:"Extrusion",wp:"waste_pct",max:"max_allowed",norm:1.8,color:"#2563a8"},
+  {k:"pls",name:"Print/Lam/Slit",wp:"wp_slitt",max:"max_slitt",norm:8,color:"#17324d"},
+  {k:"pou",name:"Pouching",wp:"waste_pct",max:"max_allowed",norm:3,color:"#c96b18"},
+  {k:"pvc",name:"PVC",wp:"waste_pct",max:"max_allowed",norm:18,color:"#b9342a"},
+  {k:"wpp",name:"WPP",wp:"waste_pct",max:"max_allowed",norm:4,color:"#b9943f"}
+];
+const fmt=(n,d=0)=>isNaN(n)||n==null?"-":Number(n).toLocaleString("en-IN",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=(n,d=2)=>isNaN(n)||n==null?"-":Number(n).toFixed(d)+"%";
+const n=v=>{const x=parseFloat(String(v??"").replace(/,/g,""));return isNaN(x)?0:x};
+const exDate=s=>{if(!s)return"";const d=s instanceof Date?s:new Date(Math.round((Number(s)-25569)*86400*1000));return isNaN(d)?String(s):d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})};
+const monthKey=s=>{const d=s instanceof Date?s:new Date(Math.round((Number(s)-25569)*86400*1000));return isNaN(d)?String(s):d.toLocaleString("en-IN",{month:"short",year:"numeric"})};
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const group=(arr,fn)=>arr.reduce((a,r)=>((a[fn(r)] ||= []).push(r),a),{});
+function setStatus(msg,isError=false){
+  const el=document.getElementById("status");
+  el.textContent=msg;
+  el.style.color=isError?"#b9342a":"#19764a";
+}
+function ensureXlsx(){
+  if(window.XLSX) return Promise.resolve();
+  setStatus("Loading Excel engine. Please wait...",false);
+  return new Promise((resolve,reject)=>{
+    const existing=document.querySelector("script[data-xlsx-fallback]");
+    if(existing){existing.addEventListener("load",resolve,{once:true});existing.addEventListener("error",()=>reject(new Error("Excel engine could not be loaded.")),{once:true});return}
+    const s=document.createElement("script");
+    s.src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+    s.dataset.xlsxFallback="1";
+    s.onload=()=>window.XLSX?resolve():reject(new Error("Excel engine loaded but XLSX is unavailable."));
+    s.onerror=()=>reject(new Error("Excel engine could not be loaded. Upload xlsx.full.min.js with this HTML or allow CDN access."));
+    document.head.appendChild(s);
+  });
+}
+
+function loadFile(ev){
+  const file=ev.target.files[0]; if(!file) return;
+  setStatus(`Reading ${file.name}...`,false);
+  const reader=new FileReader();
+  reader.onerror=()=>setStatus("Could not read the selected file. Please try again.",true);
+  reader.onload=async e=>{
+    try{
+    await ensureXlsx();
+    const wb=XLSX.read(new Uint8Array(e.target.result),{type:"array",cellDates:false});
+    WD={};
+    const sExt=wb.SheetNames.find(s=>/extrusion/i.test(s));
+    if(sExt){WD.ext=XLSX.utils.sheet_to_json(wb.Sheets[sExt],{raw:true,defval:null}).filter(r=>r.DATE&&!isNaN(parseFloat(r.DATE))).map(r=>({
+      date:r.DATE,qty3l:n(r[" QTY (3L) - PROD."]),waste3l:n(r["WASTAGE (3L)"]),input3l:n(r["INPUT (3L)"]),
+      qty5l:n(r["QTY (5L) - PROD."]),waste5l:n(r["WASTAGE (5L)"]),input5l:n(r["INPUT (5L)"]),
+      tot_qty:n(r["TOTAL QTY"]),tot_waste:n(r["TOTAL WASTAGE (EXT)"]),tot_input:n(r["TOTAL INPUT "]),
+      waste_pct:parseFloat(r["TOTAL WASTAGE % (EXT)"])||0,max_allowed:n(r["MAX. ALLOWED WASTAGE % (EXT)"])||1.8,variance:parseFloat(r["VARIANCE % (EXT)"])||0,avg30:parseFloat(r["Average % (past 30 days)"])||0,reason:r.REASON||""
+    }))}
+    const sPls=wb.SheetNames.find(s=>/printing|lamint|lamination|slitting/i.test(s));
+    if(sPls){WD.pls=XLSX.utils.sheet_to_json(wb.Sheets[sPls],{raw:true,defval:null}).filter(r=>r.DATE&&!isNaN(parseFloat(r.DATE))).map(r=>({
+      date:r.DATE,qty_insp:n(r["QTY (INSP)"]),waste_insp:n(r["WASTAGE (INSP)"]),wp_insp:parseFloat(r["WASTAGE % (INSP)"])||0,max_insp:n(r["MAX. ALLOWED WASTAGE % (INSP)"])||6,var_insp:parseFloat(r["VARIANCE % (INSP)"])||0,avg30_insp:parseFloat(r["Average % (past 30 days)- INSP."])||0,
+      qty_coex_sl:n(r["CO-EX QTY (SLITT-CO EX)"]),waste_coex_sl:n(r["WASTAGE (SLITT-CO EX)"]),wp_coex_sl:parseFloat(r["TOTAL WASTAGE % (SLITT--CO EX)"])||0,max_coex_sl:n(r["MAX. ALLOWED WASTAGE % (SLITT--CO EX)"])||8,var_coex_sl:parseFloat(r["VARIANCE % (SLITT--CO EX)"])||0,avg30_coex_sl:parseFloat(r["Average % (past 30 days) - (SLITT--CO EX)"])||0,
+      qty_lam_sl:n(r["LAMINATE QTY (SLITT-LAM)"]),waste_lam_sl:n(r["WASTAGE (SLITT-LAM)"]),wp_lam_sl:parseFloat(r["TOTAL WASTAGE % (SLITT--LAM)"])||0,max_lam_sl:n(r["MAX. ALLOWED WASTAGE % (SLITT--LAM)"])||8,var_lam_sl:parseFloat(r["VARIANCE % (SLITT--LAM)"])||0,avg30_lam_sl:parseFloat(r["Average % (past 30 days) - (SLITT--LAM)"])||0,
+      tot_qty_sl:n(r["TOTAL QTY (SLITT)"]),tot_waste_sl:n(r["TOTAL WASTAGE (SLITT)"]),wp_slitt:parseFloat(r["TOTAL WASTAGE % (SLITT)"])||0,max_slitt:n(r["MAX. ALLOWED WASTAGE % (SLITT)"])||8,var_slitt:parseFloat(r["VARIANCE % (SLITT)"])||0,avg30_slitt:parseFloat(r["Average % (past 30 days) -SLITT"])||0,remarks:r["REMARKS.1"]||r.REMARKS||""
+    }))}
+    const sPou=wb.SheetNames.find(s=>/pouching/i.test(s));
+    if(sPou){WD.pou=XLSX.utils.sheet_to_json(wb.Sheets[sPou],{raw:true,defval:null}).filter(r=>r.DATE&&!isNaN(parseFloat(r.DATE))).map(r=>simpleRow(r,"QTY (POUCHING)","WASTAGE (POUCHING)","WASTAGE % (POUCHING)","MAX. ALLOWED WASTAGE % (POUCH)",3))}
+    const sPvc=wb.SheetNames.find(s=>/pvc/i.test(s));
+    if(sPvc){WD.pvc=XLSX.utils.sheet_to_json(wb.Sheets[sPvc],{raw:true,defval:null}).filter(r=>r.DATE&&!isNaN(parseFloat(r.DATE))).map(r=>simpleRow(r,"QTY (PVC)","WASTAGE (PVC)","WASTAGE % (PVC)","MAX. ALLOWED WASTAGE % (PVC)",18))}
+    const sWpp=wb.SheetNames.find(s=>/wpp/i.test(s));
+    if(sWpp){WD.wpp=XLSX.utils.sheet_to_json(wb.Sheets[sWpp],{raw:true,defval:null}).filter(r=>r.DATE&&!isNaN(parseFloat(r.DATE))).map(r=>({...simpleRow(r,"QTY (WPP)","WASTAGE (WPP)","WASTAGE % (WPP)","MAX. ALLOWED WASTAGE % (WPP)",4),production:n(r["PRODUCTION (WPP)"])}))}
+    const counts=Object.entries(WD).map(([k,v])=>`${labels[k]}: ${v.length}`).join(" | ");
+    if(!Object.values(WD).some(a=>a.length)){setStatus("No wastage rows found. Please check sheet names and DATE columns.",true);return}
+    setStatus(`Loaded ${counts}`,false);
+    document.getElementById("dashboard").style.display="block";
+    renderAll();
+    }catch(err){
+      console.error(err);
+      setStatus(err.message||"Excel import failed. Please check the workbook format.",true);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+function simpleRow(r,qty,waste,wp,max,norm){return{date:r.DATE,qty:n(r[qty]),waste:n(r[waste]),waste_pct:parseFloat(r[wp])||0,max_allowed:n(r[max])||norm,variance:parseFloat(r["VARIANCE % (POUCH)"]||r["VARIANCE % (PVC)"]||r["VARIANCE % (WPP)"])||0,avg30:parseFloat(r["Average (past 30 days)"])||0,remarks:r.REMARKS||""}}
+
+function renderAll(){renderKpis();renderDeptCards();renderCharts();populateMonths();renderMonthlyTable();renderDetailTable();renderInsights()}
+function stat(d){
+  const arr=WD[d.k]||[], valid=arr.filter(r=>!isNaN(r[d.wp])&&Number(r[d.wp])>0), max=valid[0]?.[d.max]||d.norm;
+  if(!valid.length)return null;
+  const avg=valid.reduce((s,r)=>s+Number(r[d.wp]),0)/valid.length, breaches=valid.filter(r=>Number(r[d.wp])>max).length, best=Math.min(...valid.map(r=>Number(r[d.wp]))), worst=Math.max(...valid.map(r=>Number(r[d.wp])));
+  return {...d,rows:arr.length,valid:valid.length,avg,max,breaches,best,worst,breachPct:breaches/valid.length*100};
+}
+function stats(){return deptCfg.map(stat).filter(Boolean)}
+function renderKpis(){
+  const s=stats(), totalRows=s.reduce((a,x)=>a+x.rows,0), breach=s.reduce((a,x)=>a+x.breaches,0), worst=s.slice().sort((a,b)=>b.avg-a.avg)[0];
+  document.getElementById("kpis").innerHTML=[
+    ["Departments Loaded",s.length,"of 5 expected",""],["Total Records",fmt(totalRows),"all department sheets","green"],["Breach Days",fmt(breach),"above max allowed","red"],["Highest Avg %",worst?`${worst.name}: ${pct(worst.avg)}`:"-","department risk","gold"]
+  ].map(x=>`<div class="kpi ${x[3]}"><div class="kl">${x[0]}</div><div class="kv">${x[1]}</div><div class="ks">${x[2]}</div></div>`).join("");
+}
+function renderDeptCards(){
+  document.getElementById("deptCards").innerHTML=stats().map(s=>`<div class="dept" style="border-top-color:${s.avg>s.max?"var(--red)":"var(--green)"}"><h3>${s.name}</h3><div class="row"><span>Avg Wastage %</span><b>${pct(s.avg)}</b></div><div class="row"><span>Max Allowed %</span><b>${pct(s.max,1)}</b></div><div class="row"><span>Breach Days</span><b>${s.breaches} / ${s.valid}</b></div><div class="row"><span>Best Day</span><b>${pct(s.best)}</b></div><div class="row"><span>Worst Day</span><b>${pct(s.worst)}</b></div></div>`).join("");
+}
+function barSvg(title,items,{height=null,valueFmt=pct,max=null}={}){
+  max=max||Math.max(...items.map(i=>i.value),1);
+  height=height||80+items.length*42;
+  const rows=items.map((i,idx)=>{const y=58+idx*42,w=Math.max(2,i.value/max*560);return`<text x="18" y="${y+14}" font-size="14" font-weight="800" fill="#1f2d3d">${esc(i.label)}</text><rect x="190" y="${y}" width="560" height="20" rx="4" fill="#e7edf5"/><rect x="190" y="${y}" width="${w}" height="20" rx="4" fill="${i.color}"/><text x="890" y="${y+14}" text-anchor="end" font-size="14" font-weight="800" fill="${i.color}">${esc(valueFmt(i.value))}</text>`}).join("");
+  return `<svg viewBox="0 0 915 ${height}" xmlns="http://www.w3.org/2000/svg"><rect width="915" height="${height}" fill="#fff"/><text x="18" y="27" font-size="16" font-weight="800" fill="#17324d">${esc(title)}</text><line x1="18" y1="40" x2="897" y2="40" stroke="#b9943f" stroke-width="2"/>${rows}</svg>`;
+}
+function pieSvg(title,items){
+  const total=items.reduce((s,i)=>s+i.value,0)||1;let angle=-90,paths="";
+  items.forEach(i=>{const a=i.value/total*360,end=angle+a,large=a>180?1:0,p1=polar(155,120,88,angle),p2=polar(155,120,88,end);paths+=`<path d="M155 120 L${p1.x} ${p1.y} A88 88 0 ${large} 1 ${p2.x} ${p2.y} Z" fill="${i.color}"/>`;angle=end});
+  const legend=items.map((i,k)=>`<rect x="310" y="${86+k*30}" width="14" height="14" rx="2" fill="${i.color}"/><text x="334" y="${98+k*30}" font-size="13" font-weight="700" fill="#1f2d3d">${esc(i.label)}: ${fmt(i.value)} (${pct(i.value/total*100,1)})</text>`).join("");
+  return `<svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg"><rect width="760" height="280" fill="#fff"/><text x="18" y="27" font-size="16" font-weight="800" fill="#17324d">${esc(title)}</text><line x1="18" y1="40" x2="742" y2="40" stroke="#b9943f" stroke-width="2"/><g transform="translate(0,35)">${paths}<circle cx="155" cy="120" r="42" fill="#fff"/><text x="155" y="126" text-anchor="middle" font-size="14" fill="#17324d" font-weight="800">${fmt(total)}</text></g>${legend}</svg>`;
+}
+function polar(cx,cy,r,a){const rad=a*Math.PI/180;return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}}
+function renderCharts(){
+  const s=stats();
+  chartData.wastage=[["Department","Avg Wastage %","Max Allowed %"],...s.map(x=>[x.name,+x.avg.toFixed(2),+x.max.toFixed(2)])];
+  chartData.breach=[["Department","Breach Days"],...s.map(x=>[x.name,x.breaches])];
+  const max=Math.max(...s.map(x=>Math.max(x.avg,x.max)),1);
+  document.getElementById("wasteChart").innerHTML=barSvg("Avg Wastage % vs Max Allowed",s.flatMap(x=>[
+    {label:x.name,value:x.avg,color:x.avg>x.max?"#b9342a":"#19764a"},
+    {label:"  Max - "+x.name,value:x.max,color:"#9aa7b5"}
+  ]),{valueFmt:v=>pct(v),max});
+  document.getElementById("breachChart").innerHTML=pieSvg("Breach Day Mix",s.map(x=>({label:x.name,value:x.breaches,color:x.color})));
+  const mRows=monthlySummaryRows();
+  chartData.trend=[["Month",...deptCfg.map(d=>d.name+" %")],...mRows.map(r=>[r.month,...deptCfg.map(d=>r[d.k]==null?"":+r[d.k].toFixed(2))])];
+  document.getElementById("trendChart").innerHTML=multiBarSvg("Monthly Wastage Trend - Individual Departments",mRows,deptCfg.map(d=>({key:d.k,label:d.name,color:d.color})));
+}
+function multiBarSvg(title,rows,series){
+  const max=Math.max(...rows.flatMap(r=>series.map(s=>r[s.key]||0)),1), groupH=series.length*24+28, height=70+rows.length*groupH;
+  const body=rows.map((r,ri)=>{
+    const y0=58+ri*groupH;
+    const bars=series.map((s,si)=>{const y=y0+22+si*24,val=r[s.key]||0,w=Math.max(2,val/max*480);return`<text x="155" y="${y+13}" text-anchor="end" font-size="11" font-weight="700" fill="#687789">${esc(s.label)}</text><rect x="172" y="${y}" width="480" height="16" rx="3" fill="#e7edf5"/><rect x="172" y="${y}" width="${w}" height="16" rx="3" fill="${s.color}"/><text x="805" y="${y+13}" text-anchor="end" font-size="12" font-weight="800" fill="${s.color}">${val?pct(val):"-"}</text>`}).join("");
+    return `<text x="18" y="${y0+12}" font-size="13" font-weight="800" fill="#17324d">${esc(r.month)}</text>${bars}`;
+  }).join("");
+  return `<svg viewBox="0 0 835 ${height}" xmlns="http://www.w3.org/2000/svg"><rect width="835" height="${height}" fill="#fff"/><text x="18" y="27" font-size="16" font-weight="800" fill="#17324d">${esc(title)}</text><line x1="18" y1="40" x2="817" y2="40" stroke="#b9943f" stroke-width="2"/>${body}</svg>`;
+}
+function populateMonths(){
+  const months=["",...new Set(Object.values(WD).flat().map(r=>monthKey(r.date)))].filter((v,i,a)=>a.indexOf(v)===i);
+  document.getElementById("monthFilter").innerHTML=months.map(m=>`<option value="${esc(m)}">${m||"All Months"}</option>`).join("");
+}
+function monthlySummaryRows(){
+  const months=[...new Set(Object.values(WD).flat().map(r=>monthKey(r.date)))].sort((a,b)=>new Date("1 "+a)-new Date("1 "+b));
+  return months.map(m=>{
+    const row={month:m};
+    deptCfg.forEach(d=>{const rows=(WD[d.k]||[]).filter(r=>monthKey(r.date)===m && Number(r[d.wp])>0);row[d.k]=rows.length?rows.reduce((s,r)=>s+Number(r[d.wp]),0)/rows.length:null});
+    return row;
+  });
+}
+function renderMonthlyTable(){
+  document.querySelector("#monthlyTbl thead").innerHTML="<tr><th>Month</th>"+deptCfg.map(d=>`<th class="r">${d.name} %</th><th>Status</th>`).join("")+"</tr>";
+  document.querySelector("#monthlyTbl tbody").innerHTML=monthlySummaryRows().map(r=>`<tr><td><b>${r.month}</b></td>`+deptCfg.map(d=>{const v=r[d.k];return v==null?`<td class="r">-</td><td>-</td>`:`<td class="r">${pct(v)}</td><td><span class="badge ${v>d.norm?"bad":"ok"}">${v>d.norm?"Exceeded":"OK"}</span></td>`}).join("")+"</tr>").join("");
+}
+function renderDetailTable(){
+  const dept=document.getElementById("deptFilter").value, m=document.getElementById("monthFilter").value;
+  const data=((WD[dept]||[]).filter(r=>!m||monthKey(r.date)===m));
+  const set=(head,body)=>{document.querySelector("#detailTbl thead").innerHTML="<tr>"+head+"</tr>";document.querySelector("#detailTbl tbody").innerHTML=body||`<tr><td colspan="20" style="text-align:center;color:var(--muted)">No data</td></tr>`};
+  if(dept==="ext")return set("<th>Date</th><th class='r'>Qty 3L</th><th class='r'>Waste 3L</th><th class='r'>Qty 5L</th><th class='r'>Waste 5L</th><th class='r'>Total Qty</th><th class='r'>Total Waste</th><th class='r'>Input</th><th class='r'>Wastage %</th><th class='r'>Max %</th><th>Reason</th>",data.map(r=>`<tr><td>${exDate(r.date)}</td><td class="r">${fmt(r.qty3l)}</td><td class="r">${fmt(r.waste3l)}</td><td class="r">${fmt(r.qty5l)}</td><td class="r">${fmt(r.waste5l)}</td><td class="r">${fmt(r.tot_qty)}</td><td class="r">${fmt(r.tot_waste)}</td><td class="r">${fmt(r.tot_input)}</td><td class="r"><span class="badge ${r.waste_pct>r.max_allowed?"bad":"ok"}">${pct(r.waste_pct)}</span></td><td class="r">${pct(r.max_allowed,1)}</td><td>${esc(r.reason)}</td></tr>`).join(""));
+  if(dept==="pls")return set("<th>Date</th><th class='r'>Insp Qty</th><th class='r'>Insp Waste</th><th class='r'>Insp %</th><th class='r'>CO-EX Slit Qty</th><th class='r'>Lam Slit Qty</th><th class='r'>Total Slit Qty</th><th class='r'>Slitting %</th><th class='r'>Max Slit %</th><th>Remarks</th>",data.map(r=>`<tr><td>${exDate(r.date)}</td><td class="r">${fmt(r.qty_insp)}</td><td class="r">${fmt(r.waste_insp)}</td><td class="r">${pct(r.wp_insp)}</td><td class="r">${fmt(r.qty_coex_sl)}</td><td class="r">${fmt(r.qty_lam_sl)}</td><td class="r">${fmt(r.tot_qty_sl)}</td><td class="r"><span class="badge ${r.wp_slitt>r.max_slitt?"bad":"ok"}">${pct(r.wp_slitt)}</span></td><td class="r">${pct(r.max_slitt,1)}</td><td>${esc(r.remarks)}</td></tr>`).join(""));
+  const head=dept==="wpp"?"<th>Date</th><th class='r'>Qty</th><th class='r'>Waste</th><th class='r'>Production</th><th class='r'>Wastage %</th><th class='r'>Max %</th><th class='r'>30-Day Avg</th><th>Remarks</th>":"<th>Date</th><th class='r'>Qty</th><th class='r'>Waste</th><th class='r'>Wastage %</th><th class='r'>Max %</th><th class='r'>30-Day Avg</th><th>Remarks</th>";
+  const body=data.map(r=>dept==="wpp"?`<tr><td>${exDate(r.date)}</td><td class="r">${fmt(r.qty)}</td><td class="r">${fmt(r.waste)}</td><td class="r">${fmt(r.production)}</td><td class="r"><span class="badge ${r.waste_pct>r.max_allowed?"bad":"ok"}">${pct(r.waste_pct)}</span></td><td class="r">${pct(r.max_allowed,1)}</td><td class="r">${pct(r.avg30)}</td><td>${esc(r.remarks)}</td></tr>`:`<tr><td>${exDate(r.date)}</td><td class="r">${fmt(r.qty)}</td><td class="r">${fmt(r.waste)}</td><td class="r"><span class="badge ${r.waste_pct>r.max_allowed?"bad":"ok"}">${pct(r.waste_pct)}</span></td><td class="r">${pct(r.max_allowed,1)}</td><td class="r">${pct(r.avg30)}</td><td>${esc(r.remarks)}</td></tr>`).join("");
+  set(head,body);
+}
+function renderInsights(){
+  const rows=stats().map(s=>`<div class="alert ${s.avg>s.max?"red":"green"}"><b>${s.name}:</b> average wastage ${pct(s.avg)} vs max ${pct(s.max,1)}. Breach days ${s.breaches}/${s.valid}; best ${pct(s.best)}, worst ${pct(s.worst)}.</div>`);
+  rows.push(`<div class="alert"><b>CFO note:</b> Days above allowed norms should be reviewed for abnormal wastage treatment, scrap recovery documentation and GST ITC implications wherever applicable.</div>`);
+  document.getElementById("insights").innerHTML=rows.join("");
+}
+
+function exportMasterExcel(){
+  if(!Object.values(WD).some(a=>a.length)){alert("Please upload data first.");return}
+  const wb=XLSX.utils.book_new(), client=document.getElementById("client").value, period=document.getElementById("period").value;
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([["Department-wise Wastage Analysis"],["Client",client],["Period",period],["Prepared By","Maars & Associates"]]),"Cover");
+  Object.entries(WD).forEach(([k,rows])=>XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows.map(r=>normalizeRow(k,r))),sheetName(k)));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(monthlySummaryRows()),"Monthly Summary");
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(stats().map(s=>({"Department":s.name,"Avg Wastage %":+s.avg.toFixed(2),"Max Allowed %":+s.max.toFixed(2),"Breach Days":s.breaches,"Total Days":s.valid,"Breach %":+s.breachPct.toFixed(2),"Best Day %":+s.best.toFixed(2),"Worst Day %":+s.worst.toFixed(2),"Status":s.avg>s.max?"Above Norm":"Within Norm"}))),"Wastage KPI Summary");
+  Object.entries(chartData).forEach(([name,data])=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(data),`Chart - ${name}`));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([["No.","Insight"],...[...document.querySelectorAll("#insights .alert")].map((el,i)=>[i+1,el.innerText])]),"Insights");
+  XLSX.writeFile(wb,`Barflex_Wastage_Master_${period.replace(/\s+/g,"_")}.xlsx`);
+}
+function normalizeRow(k,r){
+  if(k==="ext")return {"Date":exDate(r.date),"Qty 3L":r.qty3l,"Waste 3L":r.waste3l,"Qty 5L":r.qty5l,"Waste 5L":r.waste5l,"Total Qty":r.tot_qty,"Total Waste":r.tot_waste,"Total Input":r.tot_input,"Wastage %":r.waste_pct,"Max Allowed %":r.max_allowed,"Variance %":r.variance,"30-Day Avg %":r.avg30,"Reason":r.reason};
+  if(k==="pls")return {"Date":exDate(r.date),"Inspection Qty":r.qty_insp,"Inspection Waste":r.waste_insp,"Inspection %":r.wp_insp,"CO-EX Slit Qty":r.qty_coex_sl,"CO-EX Slit Waste":r.waste_coex_sl,"CO-EX Slit %":r.wp_coex_sl,"Lam Slit Qty":r.qty_lam_sl,"Lam Slit Waste":r.waste_lam_sl,"Lam Slit %":r.wp_lam_sl,"Total Slit Qty":r.tot_qty_sl,"Total Slit Waste":r.tot_waste_sl,"Total Slit %":r.wp_slitt,"Max Slit %":r.max_slitt,"Remarks":r.remarks};
+  return {"Date":exDate(r.date),"Qty":r.qty,"Waste":r.waste,"Production":r.production||"","Wastage %":r.waste_pct,"Max Allowed %":r.max_allowed,"Variance %":r.variance,"30-Day Avg %":r.avg30,"Remarks":r.remarks};
+}
+function sheetName(k){return {"ext":"WASTAGE - EXTRUSION","pls":"WASTAGE - PRINT LAM SLIT","pou":"WASTAGE - POUCHING","pvc":"WASTAGE - PVC","wpp":"WASTAGE - WPP"}[k]}
+function downloadBlob(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},200)}
+function exportChart(id,name,type="png"){const svg=document.querySelector(`#${id} svg`);if(!svg){alert("Chart not available.");return}const text=new XMLSerializer().serializeToString(svg);svgToPng(text,name)}
+function exportChartExcel(key){if(!chartData[key]){alert("Chart data not available.");return}const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(chartData[key]),"Chart Data");XLSX.writeFile(wb,`Barflex_${key}_chart_data.xlsx`)}
+function svgToPng(text,name){const viewBox=(text.match(/viewBox="([^"]+)"/)||[])[1]?.split(/\s+/).map(Number)||[0,0,900,420];const width=Number(text.match(/width="(\d+)"/)?.[1])||viewBox[2]||900;const height=Number(text.match(/height="(\d+)"/)?.[1])||viewBox[3]||420;const img=new Image(),url=URL.createObjectURL(new Blob([text],{type:"image/svg+xml"}));img.onload=()=>{const c=document.createElement("canvas");c.width=width*2;c.height=height*2;const ctx=c.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(b=>b&&downloadBlob(b,`${name}.png`));URL.revokeObjectURL(url)};img.src=url}
+function exportAllCharts(){["wasteChart","breachChart","trendChart"].forEach((id,i)=>setTimeout(()=>exportChart(id,["wastage_vs_max","breach_day_mix","monthly_wastage_trend"][i],"png"),i*350))}
+function exportTableImage(cardId,name){
+  const node=document.getElementById(cardId),title=node.querySelector(".title")?.childNodes[0]?.textContent?.trim()||name,table=node.querySelector("table");
+  if(!table){alert("Table not available.");return}
+  const rows=[...table.rows].map(tr=>[...tr.cells].map(td=>td.innerText.trim()));
+  const colCount=Math.max(...rows.map(r=>r.length)),colW=145,rowH=28,width=Math.max(760,colCount*colW+36),height=Math.min(2200,70+rows.length*rowH);
+  const body=rows.slice(0,Math.floor((height-70)/rowH)).map((r,ri)=>r.map((cell,ci)=>{const x=18+ci*colW,y=54+ri*rowH,isHead=ri===0,fill=isHead?"#17324d":ri%2?"#f7f9fd":"#fff",color=isHead?"#fff":"#1f2d3d",weight=isHead||ci===0?"800":"500";return`<rect x="${x}" y="${y}" width="${colW}" height="${rowH}" fill="${fill}" stroke="#dce4ef"/><text x="${x+8}" y="${y+18}" font-size="11" font-weight="${weight}" fill="${color}">${esc(cell).slice(0,22)}</text>`}).join("")).join("");
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="${width}" height="${height}" fill="#fff"/><text x="18" y="28" font-size="16" font-weight="800" fill="#17324d">${esc(title)}</text><line x1="18" y1="42" x2="${width-18}" y2="42" stroke="#b9943f" stroke-width="2"/>${body}</svg>`;
+  svgToPng(svg,name);
+}
+function exportTableExcel(tableId,name){
+  const table=document.getElementById(tableId); if(!table){alert("Table not available.");return}
+  const rows=[...table.rows].map(tr=>[...tr.cells].map(td=>td.innerText.trim()));
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),"Table Data");
+  XLSX.writeFile(wb,`Barflex_${name}.xlsx`);
+}
+</script>
+</body>
+</html>
